@@ -3,4 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Teslalab.Server.Models\Teslalab.Server.Models.csproj" />
+  </ItemGroup>
 </Project>

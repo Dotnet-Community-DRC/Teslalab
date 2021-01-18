@@ -15,12 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Teslalab.Repositories\Teslalab.Repositories.csproj" />
+    <ProjectReference Include="..\..\Teslalab.Server.Infrastructure\Teslalab.Server.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Teslalab.Server.Models\Teslalab.Server.Models.csproj" />
+    <ProjectReference Include="..\..\Teslalab.Server.Services\Teslalab.Server.Services.csproj" />
     <ProjectReference Include="..\Client\Teslalab.Client.csproj" />
     <ProjectReference Include="..\Shared\Teslalab.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 </Project>

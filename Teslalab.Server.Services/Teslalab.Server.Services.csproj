@@ -1,6 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Teslalab.Repositories\Teslalab.Repositories.csproj" />
+		<ProjectReference Include="..\Teslalab.Server.Infrastructure\Teslalab.Server.Infrastructure.csproj" />
+		<ProjectReference Include="..\Teslalab.Server.Models\Teslalab.Server.Models.csproj" />
+		<ProjectReference Include="..\Teslalab\Shared\Teslalab.Shared.csproj" />
+	</ItemGroup>
 </Project>
