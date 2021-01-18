@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Teslalab.Server.Models.Models
 {
@@ -18,10 +20,16 @@ namespace Teslalab.Server.Models.Models
         public DbSet<Tag> Tags { get; set; }
         public DbSet<PlaylistVideo> PlaylistVideos { get; set; }
 
+        private string _userId = null;
+
+        public async Task SaveChangesAsync(string userId)
+        {
+            _userId = userId;
+            await SaveChangesAsync();
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
-
             builder.Entity<ApplicationUser>()
                    .HasMany(p => p.CreatedVideos)
                    .WithOne(p => p.CreatedUser)
@@ -50,6 +58,47 @@ namespace Teslalab.Server.Models.Models
                    .HasMany(p => p.ModifiedComments)
                    .WithOne(p => p.ModifiedByUser)
                    .OnDelete(DeleteBehavior.NoAction);
+
+            base.OnModelCreating(builder);
+        }
+
+        public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var item in ChangeTracker.Entries())
+            {
+                if (item.Entity is UserRecord)
+                {
+                    var userRecord = (UserRecord)item.Entity;
+
+                    switch (item.State)
+                    {
+                        case EntityState.Detached:
+                            break;
+
+                        case EntityState.Unchanged:
+                            break;
+
+                        case EntityState.Deleted:
+                            break;
+
+                        case EntityState.Modified:
+                            userRecord.ModifiedOn = DateTime.UtcNow;
+                            userRecord.ModifiedByUserId = _userId;
+                            break;
+
+                        case EntityState.Added:
+                            userRecord.ModifiedOn = DateTime.UtcNow;
+                            userRecord.ModifiedByUserId = _userId;
+                            userRecord.CreatedOn = DateTime.UtcNow;
+                            userRecord.CreatedByUserId = _userId;
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }
