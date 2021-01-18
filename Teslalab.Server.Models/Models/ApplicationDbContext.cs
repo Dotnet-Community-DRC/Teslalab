@@ -47,7 +47,7 @@ namespace Teslalab.Server.Models.Models
                   .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<ApplicationUser>()
-                   .HasMany(p => p.ModifedComments)
+                   .HasMany(p => p.ModifiedComments)
                    .WithOne(p => p.ModifiedByUser)
                    .OnDelete(DeleteBehavior.NoAction);
         }
