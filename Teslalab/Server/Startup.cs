@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 using Teslalab.Repositories;
 using Teslalab.Server.Infrastructure;
@@ -74,6 +76,31 @@ namespace Teslalab.Server
 
             services.AddScoped<IUserService, UserService>();
 
+            services.AddScoped(sp =>
+            {
+                var httpContext = sp.GetService<IHttpContextAccessor>().HttpContext;
+
+                var identityOptions = new Teslalab.Server.Infrastructure.IdentityOptions();
+
+                if (httpContext.User.Identity.IsAuthenticated)
+                {
+                    string id = httpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                    string firstName = httpContext.User.FindFirst(ClaimTypes.GivenName).Value;
+                    string lastName = httpContext.User.FindFirst(ClaimTypes.Surname).Value;
+                    string email = httpContext.User.FindFirst(ClaimTypes.Email).Value;
+                    string role = httpContext.User.FindFirst(ClaimTypes.Role).Value;
+
+                    identityOptions.UserId = id;
+                    identityOptions.Email = email;
+                    identityOptions.FullName = $"{firstName} {lastName}";
+                    identityOptions.IsAdmin = role == "Admin" ? true : false;
+                }
+
+                return identityOptions;
+            });
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

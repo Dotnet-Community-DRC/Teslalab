@@ -10,8 +10,9 @@ namespace Teslalab.Repositories
     public interface IUnitOfWork
     {
         IUserRepository Users { get; }
+        IPlaylistRepository Playlists { get; }
 
-        Task CommitChangesAsync();
+        Task CommitChangesAsync(string userId);
     }
 
     public class UnitOfWork : IUnitOfWork
@@ -42,9 +43,22 @@ namespace Teslalab.Repositories
             }
         }
 
-        public async Task CommitChangesAsync()
+        private IPlaylistRepository _playlist;
+
+        public IPlaylistRepository Playlists
         {
-            await _db.SaveChangesAsync();
+            get
+            {
+                if (_playlist == null)
+                    _playlist = new PlaylistRepository(_db);
+
+                return _playlist;
+            }
+        }
+
+        public async Task CommitChangesAsync(string userId)
+        {
+            await _db.SaveChangesAsync(userId);
         }
     }
 }
