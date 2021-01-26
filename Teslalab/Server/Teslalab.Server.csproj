@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Client\Teslalab.Client.csproj" />
     <ProjectReference Include="..\Shared\Teslalab.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\" />
+  </ItemGroup>
 </Project>

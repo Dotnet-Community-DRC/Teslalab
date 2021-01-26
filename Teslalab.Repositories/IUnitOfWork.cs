@@ -6,6 +6,7 @@ namespace Teslalab.Repositories
     {
         IUserRepository Users { get; }
         IPlaylistRepository Playlists { get; }
+        IVideoRepository Videos { get; }
 
         Task CommitChangesAsync(string userId);
     }

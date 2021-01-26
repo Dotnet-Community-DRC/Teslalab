@@ -45,6 +45,19 @@ namespace Teslalab.Repositories
             }
         }
 
+        private IVideoRepository _video;
+
+        public IVideoRepository Videos
+        {
+            get
+            {
+                if (_video == null)
+                    _video = new VideoRepository(_db);
+
+                return _video;
+            }
+        }
+
         public async Task CommitChangesAsync(string userId)
         {
             await _db.SaveChangesAsync(userId);
