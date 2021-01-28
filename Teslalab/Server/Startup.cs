@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +15,9 @@ using Teslalab.Repositories;
 using Teslalab.Server.Infrastructure;
 using Teslalab.Server.Models.DataSeeding;
 using Teslalab.Server.Models.Models;
+using Teslalab.Server.Models.Profiles;
 using Teslalab.Server.Services;
+using Teslalab.Server.Services.Utilities;
 
 namespace Teslalab.Server
 {
@@ -27,8 +30,6 @@ namespace Teslalab.Server
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -99,8 +100,26 @@ namespace Teslalab.Server
                 return identityOptions;
             });
 
+            services.AddSingleton(sp =>
+            {
+                return new EnvironmentOptions()
+                {
+                    ApiUrl = Configuration["ApiUrl"]
+                };
+            });
+
             services.AddHttpContextAccessor();
             services.AddScoped<IPlaylistService, PlaylistService>();
+            services.AddScoped<IVideoService, VideoService>();
+            services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
+            services.AddSingleton(provider => new MapperConfiguration(config =>
+            {
+                config.AddProfile(new VideoProfile(provider.GetService<EnvironmentOptions>()));
+            }).CreateMapper());
+
+            //services.AddAutoMapper(typeof(VideoProfile));
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
