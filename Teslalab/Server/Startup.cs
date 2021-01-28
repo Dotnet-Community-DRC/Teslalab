@@ -112,6 +112,7 @@ namespace Teslalab.Server
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IVideoService, VideoService>();
             services.AddScoped<IFileStorageService, LocalFileStorageService>();
+            services.AddScoped<ICommentsService, CommentsService>();
 
             services.AddSingleton(provider => new MapperConfiguration(config =>
             {

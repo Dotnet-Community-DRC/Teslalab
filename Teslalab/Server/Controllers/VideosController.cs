@@ -30,6 +30,15 @@ namespace Teslalab.Server.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAll(string id)
+        {
+            var result = await _videoService.GetVideoDtoAsync(id);
+            if (!result.IsSuccess)
+                return NotFound();
+            return Ok(result);
+        }
+
         [HttpGet("GetAll")]
         public IActionResult GetAll(string query = "", int pageNumber = 1, int pageSize = 10)
         {
