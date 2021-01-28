@@ -5,6 +5,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Teslalab.Repositories\Teslalab.Repositories.csproj" />
 		<ProjectReference Include="..\Teslalab.Server.Infrastructure\Teslalab.Server.Infrastructure.csproj" />
 		<ProjectReference Include="..\Teslalab.Server.Models\Teslalab.Server.Models.csproj" />

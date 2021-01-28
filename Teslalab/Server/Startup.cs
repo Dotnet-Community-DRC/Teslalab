@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ using Teslalab.Repositories;
 using Teslalab.Server.Infrastructure;
 using Teslalab.Server.Models.DataSeeding;
 using Teslalab.Server.Models.Models;
+using Teslalab.Server.Models.Profiles;
 using Teslalab.Server.Services;
 using Teslalab.Server.Services.Utilities;
 
@@ -110,6 +112,14 @@ namespace Teslalab.Server
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IVideoService, VideoService>();
             services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
+            services.AddSingleton(provider => new MapperConfiguration(config =>
+            {
+                config.AddProfile(new VideoProfile(provider.GetService<EnvironmentOptions>()));
+            }).CreateMapper());
+
+            //services.AddAutoMapper(typeof(VideoProfile));
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
