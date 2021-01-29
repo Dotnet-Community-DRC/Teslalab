@@ -121,6 +121,8 @@ namespace Teslalab.Server
 
             //services.AddAutoMapper(typeof(VideoProfile));
 
+            services.AddSwaggerGen();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -148,6 +150,13 @@ namespace Teslalab.Server
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(swagger =>
+            {
+                swagger.SwaggerEndpoint("/swagger/v1/swagger.json", "Teslalab API");
+            });
 
             app.UseRouting();
 
