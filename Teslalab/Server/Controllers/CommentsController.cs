@@ -25,5 +25,25 @@ namespace Teslalab.Server.Controllers
 
             return BadRequest(result);
         }
+
+        [HttpPut("Edit")]
+        public async Task<IActionResult> Edit([FromBody] CommentDto model)
+        {
+            var result = await _commentsService.EditAsync(model);
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var result = await _commentsService.RemoveAsync(id);
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
     }
 }

@@ -6,6 +6,8 @@ using Teslalab.Server.Infrastructure;
 using Teslalab.Shared;
 using Teslalab.Server.Models.Models;
 using Teslalab.Shared.DTOs;
+using System.Linq;
+using Teslalab.Server.Models.Mappers;
 
 namespace Teslalab.Server.Services
 {
@@ -69,19 +71,54 @@ namespace Teslalab.Server.Services
             };
         }
 
-        public Task<OperationResponse<CommentDto>> EditAsync(CommentDto model)
+        public async Task<OperationResponse<CommentDto>> EditAsync(CommentDto model)
         {
-            throw new NotImplementedException();
+            var comment = await _unitOfWork.Comments.GetByIdAsync(model.Id);
+            if (comment == null)
+                return new OperationResponse<CommentDto>
+                {
+                    IsSuccess = false,
+                    Message = "Comment not found"
+                };
+
+            comment.Content = model.Content;
+
+            await _unitOfWork.CommitChangesAsync(_identity.UserId);
+
+            return new OperationResponse<CommentDto>
+            {
+                IsSuccess = true,
+                Data = model,
+                Message = "Comment has been edited successfully!"
+            };
         }
 
         public IEnumerable<CommentDto> GetVideoComments(string videoId)
         {
-            throw new NotImplementedException();
+            var comments = _unitOfWork.Comments.GetAllForVideo(videoId).ToArray();
+
+            return comments.Select(c => c.ToCommentDto());
         }
 
-        public Task<OperationResponse<CommentDto>> RemoveAsync(string commentId)
+        public async Task<OperationResponse<CommentDto>> RemoveAsync(string commentId)
         {
-            throw new NotImplementedException();
+            var comment = await _unitOfWork.Comments.GetByIdAsync(commentId);
+            if (comment == null)
+                return new OperationResponse<CommentDto>
+                {
+                    IsSuccess = false,
+                    Message = "Comment not found"
+                };
+
+            _unitOfWork.Comments.Remove(comment);
+            await _unitOfWork.CommitChangesAsync(_identity.UserId);
+
+            return new OperationResponse<CommentDto>
+            {
+                Data = comment.ToCommentDto(),
+                IsSuccess = true,
+                Message = "Comment deleted successfully"
+            };
         }
     }
 }
